@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registered Students — AI Career Guidance</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav id="nav"></nav>
+
+<div class="container">
+  <div class="page-head">
+    <h1>📋 Registered Students</h1>
+    <p>All students registered in the system. Click a card to view their career recommendations.</p>
+  </div>
+
+  <div id="students" class="students-grid">
+    <div class="empty">Loading...</div>
+  </div>
+</div>
+
+<footer>AI-Based Student Career Guidance System • Team Hunters Algorithm • IMS Noida (2024–2027)</footer>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+<script>
+  buildNav("/students");
+
+  function initials(name) {
+    return name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase();
+  }
+
+  async function load() {
+    const box = document.getElementById("students");
+    try {
+      const list = await api("/api/students");
+      if (!list.length) {
+        box.innerHTML = '<div class="empty">No students yet. <a style="color:var(--accent)" href="/register">Register one</a> first.</div>';
+        return;
+      }
+      box.innerHTML = list.map((st) => `
+        <div class="student-card">
+          <div class="avatar">${initials(st.name)}</div>
+          <div class="name">${st.name}</div>
+          <div class="email">${st.email}</div>
+          <div class="meta">
+            <span class="pill">🎓 ${st.academic_score}</span>
+            <span class="pill">💻 ${st.programming}</span>
+            <span class="pill">🧠 ${st.analytical}</span>
+          </div>
+          <a class="btn" href="/recommendations?id=${st.id}">View Recommendations →</a>
+        </div>`).join("");
+    } catch (e) {
+      box.innerHTML = '<div class="empty">Could not load students.</div>';
+      showToast(e.message, false);
+    }
+  }
+
+  load();
+</script>
+</body>
+</html>

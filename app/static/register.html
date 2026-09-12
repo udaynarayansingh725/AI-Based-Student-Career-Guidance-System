@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration — AI Career Guidance</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav id="nav"></nav>
+
+<div class="container">
+  <div class="page-head">
+    <h1>🪪 Student Registration</h1>
+    <p>Fill in the profile below. The AI will analyze it and predict the best career paths.</p>
+  </div>
+
+  <form id="regForm" class="grid-form" onsubmit="return false;">
+    <div class="card">
+      <h2>👤 Basic Details</h2>
+
+      <label class="field">Full Name</label>
+      <input type="text" id="name" placeholder="e.g. Uday Narayan Singh">
+
+      <label class="field">Email</label>
+      <input type="email" id="email" placeholder="student@college.edu">
+
+      <label class="field">Academic Score</label>
+      <div class="slider-row">
+        <input type="range" id="academic_score" min="0" max="100" value="80">
+        <output>80</output>
+      </div>
+
+      <label class="field">Interests</label>
+      <div class="chips" id="interests-chips"></div>
+
+      <label class="field">Personality Traits</label>
+      <div class="chips" id="personality-chips"></div>
+    </div>
+
+    <div class="card">
+      <h2>📊 Skills &amp; Aptitudes</h2>
+
+      <label class="field">Programming</label>
+      <div class="slider-row"><input type="range" id="programming" min="0" max="100" value="75"><output>75</output></div>
+
+      <label class="field">Databases</label>
+      <div class="slider-row"><input type="range" id="databases" min="0" max="100" value="70"><output>70</output></div>
+
+      <label class="field">Problem Solving</label>
+      <div class="slider-row"><input type="range" id="problem_solving" min="0" max="100" value="80"><output>80</output></div>
+
+      <label class="field">Communication</label>
+      <div class="slider-row"><input type="range" id="communication" min="0" max="100" value="70"><output>70</output></div>
+
+      <label class="field">Creativity</label>
+      <div class="slider-row"><input type="range" id="creativity" min="0" max="100" value="65"><output>65</output></div>
+
+      <label class="field">Teamwork</label>
+      <div class="slider-row"><input type="range" id="teamwork" min="0" max="100" value="70"><output>70</output></div>
+
+      <label class="field">Analytical</label>
+      <div class="slider-row"><input type="range" id="analytical" min="0" max="100" value="75"><output>75</output></div>
+
+      <button class="primary" id="submit">Predict My Career ➜</button>
+    </div>
+  </form>
+</div>
+
+<footer>AI-Based Student Career Guidance System • Team Hunters Algorithm • IMS Noida (2024–2027)</footer>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+<script>
+  buildNav("/register");
+  buildChips("interests-chips", INTERESTS);
+  buildChips("personality-chips", PERSONALITY);
+
+  SKILLS.forEach((id) => {
+    const el = document.getElementById(id);
+    el.addEventListener("input", () => (el.nextElementSibling.textContent = el.value));
+  });
+
+  document.getElementById("submit").addEventListener("click", async () => {
+    const btn = document.getElementById("submit");
+    const payload = {
+      name: document.getElementById("name").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      interests: [...document.querySelectorAll("#interests-chips input:checked")].map((i) => i.value),
+      personality: {},
+    };
+    document.querySelectorAll("#personality-chips input:checked").forEach(
+      (i) => (payload.personality[i.value] = "true")
+    );
+    SKILLS.forEach((id) => (payload[id] = Number(document.getElementById(id).value)));
+
+    if (!payload.name || !payload.email) return showToast("Name and email are required", false);
+
+    btn.disabled = true;
+    btn.textContent = "Analyzing...";
+    try {
+      const student = await api("/api/students", "POST", payload);
+      const rec = await api(`/api/students/${student.id}/recommendations`, "POST");
+      const top = rec.recommendations[0];
+      showToast(`Registered! Best match: ${top.career} (${top.match_percentage}%)`);
+      setTimeout(() => (window.location.href = `/recommendations?id=${student.id}`), 900);
+    } catch (e) {
+      showToast(e.message, false);
+      btn.disabled = false;
+      btn.textContent = "Predict My Career ➜";
+    }
+  });
+</script>
+</body>
+</html>

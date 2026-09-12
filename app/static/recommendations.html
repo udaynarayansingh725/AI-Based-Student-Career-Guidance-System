@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recommended Careers — AI Career Guidance</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav id="nav"></nav>
+
+<div class="container">
+  <div class="page-head">
+    <h1>🎯 Recommended Careers</h1>
+    <p>Select a student to view AI-generated career recommendations and match scores.</p>
+  </div>
+
+  <div class="toolbar">
+    <select id="studentSelect"><option>Loading students...</option></select>
+    <button class="ghost" id="refresh">🔄 Generate / Refresh</button>
+  </div>
+
+  <div id="studentSummary" class="card" style="margin-bottom:18px; display:none"></div>
+  <div id="recommendations"></div>
+</div>
+
+<footer>AI-Based Student Career Guidance System • Team Hunters Algorithm • IMS Noida (2024–2027)</footer>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+<script>
+  buildNav("/recommendations");
+
+  const params = new URLSearchParams(window.location.search);
+  const wantedId = params.get("id");
+  const select = document.getElementById("studentSelect");
+  let students = [];
+
+  async function loadStudents() {
+    try {
+      students = await api("/api/students");
+      if (!students.length) {
+        select.innerHTML = '<option value="">No students registered</option>';
+        document.getElementById("recommendations").innerHTML =
+          '<div class="empty">No students yet. <a style="color:var(--accent)" href="/register">Register one</a> first.</div>';
+        return;
+      }
+      select.innerHTML = students
+        .map((s) => `<option value="${s.id}">${s.name} — ${s.email}</option>`)
+        .join("");
+
+      let target = wantedId || localStorage.getItem("lastStudentId");
+      if (!students.some((s) => String(s.id) === String(target))) target = students[0].id;
+      select.value = target;
+      loadRecommendations(target);
+    } catch (e) {
+      showToast(e.message, false);
+    }
+  }
+
+  function renderSummary(st) {
+    const box = document.getElementById("studentSummary");
+    if (!st) { box.style.display = "none"; return; }
+    box.style.display = "block";
+    const skills = [
+      ["Academics", st.academic_score], ["Programming", st.programming], ["Databases", st.databases],
+      ["Problem Solving", st.problem_solving], ["Communication", st.communication],
+      ["Creativity", st.creativity], ["Teamwork", st.teamwork], ["Analytical", st.analytical],
+    ];
+    box.innerHTML = `
+      <h2>👤 ${st.name}</h2>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:12px">${st.email}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+        ${(st.interests || []).map((i) => `<span class="skill">${i}</span>`).join("")}
+        ${Object.keys(st.personality || {}).map((p) => `<span class="skill">${p}</span>`).join("")}
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px">
+        ${skills.map(([k, v]) => `<div style="font-size:12.5px;color:var(--muted)">${k}<b style="float:right;color:var(--accent)">${v}</b></div>`).join("")}
+      </div>`;
+  }
+
+  async function loadRecommendations(id) {
+    const student = students.find((s) => String(s.id) === String(id));
+    renderSummary(student);
+    try {
+      let data = await api(`/api/students/${id}/recommendations`);
+      if (!data.recommendations.length) {
+        data = await api(`/api/students/${id}/recommendations`, "POST");
+      }
+      renderRecommendations(data.recommendations);
+      if (data.recommendations.length) {
+        showToast(`${student.name}'s top match: ${data.recommendations[0].career} (${data.recommendations[0].match_percentage}%)`);
+      }
+    } catch (e) {
+      showToast(e.message, false);
+    }
+  }
+
+  select.addEventListener("change", () => {
+    localStorage.setItem("lastStudentId", select.value);
+    loadRecommendations(select.value);
+  });
+
+  document.getElementById("refresh").addEventListener("click", async () => {
+    const id = select.value;
+    if (!id) return;
+    try {
+      const data = await api(`/api/students/${id}/recommendations`, "POST");
+      renderRecommendations(data.recommendations);
+      showToast("Recommendations regenerated!");
+    } catch (e) {
+      showToast(e.message, false);
+    }
+  });
+
+  loadStudents();
+</script>
+</body>
+</html>
