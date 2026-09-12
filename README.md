@@ -173,7 +173,6 @@ export DATABASE_URL=postgresql://career:career_pass@localhost:5432/career_guidan
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/` | Web frontend |
-| GET | `/api/health` | Health check |
 | POST | `/api/students` | Register a student |
 | GET | `/api/students` | List all students |
 | GET | `/api/students/{id}` | Get student by ID |
