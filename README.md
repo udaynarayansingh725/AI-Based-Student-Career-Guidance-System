@@ -1,7 +1,5 @@
 # AI-Based Student Career Guidance System
 
-> **Team: Hunters Algorithm**
-
 An AI-powered platform that provides personalized, data-driven career guidance to students by analyzing academic records, skills & aptitudes, and personality profiles.
 
 ---
