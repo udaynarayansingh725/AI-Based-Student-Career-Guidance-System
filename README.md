@@ -125,9 +125,6 @@ uvicorn app.main:app --reload
 python app/seed.py
 ```
 
-**Web App:** http://localhost:8000
-**API Docs:** http://localhost:8000/docs
-
 ---
 
 ## Frontend (Web UI)
