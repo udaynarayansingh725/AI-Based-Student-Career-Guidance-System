@@ -6,15 +6,7 @@ An AI-powered platform that provides personalized, data-driven career guidance t
 
 ---
 
-## Team Members
 
-| Name | Role |
-|---|---|
-| Uday Narayan Singh | Developer |
-| Himanshu Kumar | Developer |
-| Shivam Rai | Developer |
-
-**College:** IMS Noida | **Academic Year:** 2024–2027
 
 ---
 
