@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Registration — AI Career Guidance</title>
+<title>Edit Student — AI Career Guidance</title>
 <link rel="stylesheet" href="/static/style.css">
 <script>
   (function () {
@@ -18,11 +18,13 @@
 
 <div class="container">
   <div class="page-head">
-    <h1>🪪 Student Registration</h1>
-    <p>Fill in the profile below. The AI will analyze it and predict the best career paths.</p>
+    <h1>✏️ Edit Student Profile</h1>
+    <p>Update the student's details below. Recommendations will be refreshed automatically.</p>
   </div>
 
-  <form id="regForm" class="grid-form" onsubmit="return false;">
+  <div id="loading" class="empty">Loading student data...</div>
+
+  <form id="editForm" class="grid-form" style="display:none" onsubmit="return false;">
     <div class="card">
       <h2>👤 Basic Details</h2>
 
@@ -69,7 +71,10 @@
       <label class="field">Analytical</label>
       <div class="slider-row"><input type="range" id="analytical" min="0" max="100" value="75"><output>75</output></div>
 
-      <button class="primary" id="submit">Predict My Career ➜</button>
+      <div style="display:flex;gap:10px;margin-top:22px">
+        <button class="ghost" id="cancel" type="button" style="flex:1">Cancel</button>
+        <button class="primary" id="save" type="button" style="flex:3;margin-top:0">💾 Save Changes</button>
+      </div>
     </div>
   </form>
 </div>
@@ -79,7 +84,7 @@
 <div class="toast" id="toast"></div>
 <script src="/static/app.js"></script>
 <script>
-  buildNav("/register");
+  buildNav("/students");
   buildChips("interests-chips", INTERESTS);
   buildChips("personality-chips", PERSONALITY);
 
@@ -88,8 +93,45 @@
     el.addEventListener("input", () => (el.nextElementSibling.textContent = el.value));
   });
 
-  document.getElementById("submit").addEventListener("click", async () => {
-    const btn = document.getElementById("submit");
+  document.getElementById("cancel").addEventListener("click", () => {
+    window.location.href = "/students";
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  const sid = params.get("id");
+  if (!sid) {
+    document.getElementById("loading").innerHTML = '<div class="empty">No student selected. <a style="color:var(--accent)" href="/students">Go back</a>.</div>';
+  } else {
+    loadStudent(sid);
+  }
+
+  async function loadStudent(id) {
+    try {
+      const st = await api(`/api/students/${id}`);
+      document.getElementById("name").value = st.name;
+      document.getElementById("email").value = st.email;
+      SKILLS.forEach((s) => {
+        document.getElementById(s).value = st[s];
+        document.getElementById(s).nextElementSibling.textContent = st[s];
+      });
+      (st.interests || []).forEach((i) => {
+        const cb = document.querySelector(`#interests-chips input[value="${i}"]`);
+        if (cb) cb.checked = true;
+      });
+      Object.keys(st.personality || {}).forEach((p) => {
+        const cb = document.querySelector(`#personality-chips input[value="${p}"]`);
+        if (cb) cb.checked = true;
+      });
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("editForm").style.display = "grid";
+    } catch (e) {
+      document.getElementById("loading").innerHTML = `<div class="empty">${e.message}</div>`;
+      showToast(e.message, false);
+    }
+  }
+
+  document.getElementById("save").addEventListener("click", async () => {
+    const btn = document.getElementById("save");
     const payload = {
       name: document.getElementById("name").value.trim(),
       email: document.getElementById("email").value.trim(),
@@ -104,17 +146,16 @@
     if (!payload.name || !payload.email) return showToast("Name and email are required", false);
 
     btn.disabled = true;
-    btn.textContent = "Analyzing...";
+    btn.textContent = "Saving...";
     try {
-      const student = await api("/api/students", "POST", payload);
-      const rec = await api(`/api/students/${student.id}/recommendations`, "POST");
-      const top = rec.recommendations[0];
-      showToast(`Registered! Best match: ${top.career} (${top.match_percentage}%)`);
-      setTimeout(() => (window.location.href = `/recommendations?id=${student.id}`), 900);
+      const updated = await api(`/api/students/${sid}`, "PUT", payload);
+      await api(`/api/students/${sid}/recommendations`, "POST");
+      showToast(`Saved! Top match: ${updated.name}`);
+      setTimeout(() => (window.location.href = `/recommendations?id=${sid}`), 900);
     } catch (e) {
       showToast(e.message, false);
       btn.disabled = false;
-      btn.textContent = "Predict My Career ➜";
+      btn.textContent = "💾 Save Changes";
     }
   });
 </script>

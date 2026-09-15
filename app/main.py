@@ -68,6 +68,11 @@ def students_page():
     return FileResponse(STATIC_DIR / "students.html")
 
 
+@app.get("/edit")
+def edit_page():
+    return FileResponse(STATIC_DIR / "edit.html")
+
+
 @app.get("/api/health")
 def health():
     return {"status": "ok", "service": "career-guidance-api"}
@@ -97,6 +102,23 @@ def get_student(student_id: int, db: Session = Depends(get_db)):
     student = db.get(Student, student_id)
     if not student:
         raise HTTPException(status_code=404, detail="Student not found")
+    return student
+
+
+@app.put("/api/students/{student_id}", response_model=StudentOut)
+def update_student(student_id: int, payload: StudentCreate, db: Session = Depends(get_db)):
+    student = db.get(Student, student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+    existing = db.query(Student).filter(Student.email == str(payload.email), Student.id != student_id).first()
+    if existing:
+        raise HTTPException(status_code=409, detail="A student with this email already exists")
+    data = payload.model_dump()
+    data["email"] = str(payload.email)
+    for field, value in data.items():
+        setattr(student, field, value)
+    db.commit()
+    db.refresh(student)
     return student
 
 

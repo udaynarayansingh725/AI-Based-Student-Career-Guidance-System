@@ -12,7 +12,10 @@ FEATURES = [
 
 CAREERS = [
     "Software Developer", "Data Analyst", "UI/UX Designer",
-    "Business Analyst", "Cybersecurity Analyst"
+    "Business Analyst", "Cybersecurity Analyst", "AI/ML Engineer",
+    "Cloud Engineer", "Mobile App Developer", "Digital Marketing Specialist",
+    "Product Manager", "Full Stack Developer", "DevOps Engineer",
+    "Technical Writer", "Game Developer", "Financial Analyst",
 ]
 
 # Career archetypes: the ideal skill profile for each career path.
@@ -23,6 +26,16 @@ PROFILES = {
     "UI/UX Designer": [78, 45, 35, 70, 90, 98, 85, 62],
     "Business Analyst": [84, 65, 70, 84, 95, 72, 92, 88],
     "Cybersecurity Analyst": [86, 90, 68, 95, 75, 45, 70, 92],
+    "AI/ML Engineer": [90, 96, 85, 97, 64, 60, 75, 98],
+    "Cloud Engineer": [84, 90, 92, 90, 76, 40, 85, 90],
+    "Mobile App Developer": [80, 94, 88, 90, 72, 85, 78, 86],
+    "Digital Marketing Specialist": [78, 45, 40, 72, 98, 90, 92, 82],
+    "Product Manager": [86, 55, 60, 88, 98, 85, 96, 92],
+    "Full Stack Developer": [85, 98, 92, 94, 76, 80, 82, 90],
+    "DevOps Engineer": [85, 90, 86, 90, 74, 45, 92, 88],
+    "Technical Writer": [80, 40, 35, 75, 97, 88, 80, 84],
+    "Game Developer": [78, 92, 60, 92, 70, 99, 84, 82],
+    "Financial Analyst": [92, 78, 90, 92, 82, 45, 78, 98],
 }
 
 # ---- Random Forest model (trained on synthetic augmented profiles) ----
@@ -50,6 +63,16 @@ INTEREST_WEIGHTS = {
     "UI/UX Designer": {"Design": 7},
     "Business Analyst": {"Business": 7, "Data": 2},
     "Cybersecurity Analyst": {"Cybersecurity": 8, "Technology": 2},
+    "AI/ML Engineer": {"AI/ML": 6, "Technology": 4},
+    "Cloud Engineer": {"Technology": 6},
+    "Mobile App Developer": {"Technology": 5, "Design": 2},
+    "Digital Marketing Specialist": {"Business": 5, "Design": 3},
+    "Product Manager": {"Business": 6, "Data": 2},
+    "Full Stack Developer": {"Technology": 5},
+    "DevOps Engineer": {"Technology": 6},
+    "Technical Writer": {"Data": 2, "Design": 1},
+    "Game Developer": {"Design": 4, "Technology": 3},
+    "Financial Analyst": {"Data": 4, "Business": 4, "AI/ML": 2},
 }
 
 PERSONALITY_WEIGHTS = {
@@ -58,6 +81,16 @@ PERSONALITY_WEIGHTS = {
     "UI/UX Designer": {"Creative": 5, "Social": 2},
     "Business Analyst": {"Social": 4, "Analytical": 3, "Detail-oriented": 1},
     "Cybersecurity Analyst": {"Analytical": 4, "Independent": 3, "Detail-oriented": 3},
+    "AI/ML Engineer": {"Analytical": 4, "Independent": 3, "Detail-oriented": 3},
+    "Cloud Engineer": {"Analytical": 3, "Independent": 3, "Detail-oriented": 2},
+    "Mobile App Developer": {"Independent": 2, "Creative": 3, "Detail-oriented": 2},
+    "Digital Marketing Specialist": {"Social": 5, "Creative": 3, "Analytical": 1},
+    "Product Manager": {"Social": 5, "Analytical": 2, "Creative": 2},
+    "Full Stack Developer": {"Independent": 2, "Analytical": 2, "Detail-oriented": 3},
+    "DevOps Engineer": {"Analytical": 2, "Independent": 2, "Detail-oriented": 2},
+    "Technical Writer": {"Creative": 3, "Independent": 3, "Detail-oriented": 2},
+    "Game Developer": {"Creative": 5, "Independent": 2},
+    "Financial Analyst": {"Analytical": 4, "Detail-oriented": 3, "Independent": 2},
 }
 
 CAREER_META = {
@@ -80,6 +113,46 @@ CAREER_META = {
     "Cybersecurity Analyst": {
         "skills": ["Networking", "Security", "Problem-Solving", "Linux", "Risk Analysis"],
         "steps": ["Learn networking", "Practice labs", "Study security fundamentals"],
+    },
+    "AI/ML Engineer": {
+        "skills": ["Python", "Machine Learning", "Deep Learning", "Statistics", "Problem-Solving"],
+        "steps": ["Master Python and math", "Build ML projects", "Learn TensorFlow/PyTorch"],
+    },
+    "Cloud Engineer": {
+        "skills": ["AWS/Azure", "Networking", "DevOps", "Linux", "Automation"],
+        "steps": ["Learn AWS/Azure", "Practice deployments", "Get cloud certifications"],
+    },
+    "Mobile App Developer": {
+        "skills": ["Kotlin/Swift/Flutter", "UI Design", "APIs", "Problem-Solving", "Programming"],
+        "steps": ["Build 2-3 apps", "Learn a mobile framework", "Publish to a store"],
+    },
+    "Digital Marketing Specialist": {
+        "skills": ["SEO", "Content", "Analytics", "Communication", "Creativity"],
+        "steps": ["Learn SEO basics", "Run a paid campaign", "Get Google Analytics certified"],
+    },
+    "Product Manager": {
+        "skills": ["Communication", "Strategy", "Analytics", "Leadership", "Problem-Solving"],
+        "steps": ["Learn PM fundamentals", "Practice case studies", "Build a product strategy portfolio"],
+    },
+    "Full Stack Developer": {
+        "skills": ["Frontend + Backend", "Databases", "APIs", "JavaScript", "Problem-Solving"],
+        "steps": ["Build full-stack projects", "Learn React + Node", "Master REST APIs"],
+    },
+    "DevOps Engineer": {
+        "skills": ["CI/CD", "Docker", "Cloud", "Automation", "Linux"],
+        "steps": ["Learn CI/CD pipelines", "Practice Docker", "Study cloud infrastructure"],
+    },
+    "Technical Writer": {
+        "skills": ["Writing", "Research", "Communication", "Documentation", "Attention to Detail"],
+        "steps": ["Start a writing portfolio", "Learn technical writing", "Publish documentation"],
+    },
+    "Game Developer": {
+        "skills": ["Unity/Unreal", "Programming", "Creativity", "Problem-Solving", "3D/2D Design"],
+        "steps": ["Learn a game engine", "Build a small game", "Publish on itch.io"],
+    },
+    "Financial Analyst": {
+        "skills": ["Excel", "Statistics", "Analytical", "Problem-Solving", "Financial Modeling"],
+        "steps": ["Master Excel", "Learn financial modeling", "Study financial statements"],
     },
 }
 

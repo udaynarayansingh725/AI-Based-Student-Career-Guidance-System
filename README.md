@@ -137,13 +137,16 @@ A built-in zero-dependency multi-page web interface (HTML/CSS/JS, no `npm` neede
 | Register | `/register` | Student registration form (8 skill sliders, interests, personality) |
 | Recommendations | `/recommendations` | AI career predictions with animated match bars, skills & next steps |
 | Students | `/students` | List of all registered students |
+| Edit | `/edit?id=X` | Edit an existing student's profile |
 
 **Features:**
 - Separate pages with navigation bar
+- **Dark / Light / System themes** — pickable from the navigation bar, saved in `localStorage`
 - One-click career prediction
+- **Edit student profiles** — update details and refresh recommendations automatically
 - Student selector + "Generate / Refresh" on the recommendations page
 - Animated match-percentage bars for top 5 careers
-- Follow this flow: **Register → Recommendations → Students**
+- Follow this flow: **Register → Recommendations → Students → Edit**
 
 Source: `app/static/` (`index.html`, `register.html`, `recommendations.html`, `students.html`, `style.css`, `app.js`)
 
@@ -176,6 +179,7 @@ export DATABASE_URL=postgresql://career:career_pass@localhost:5432/career_guidan
 | POST | `/api/students` | Register a student |
 | GET | `/api/students` | List all students |
 | GET | `/api/students/{id}` | Get student by ID |
+| PUT | `/api/students/{id}` | Update student (edit profile) |
 | POST | `/api/students/{id}/recommendations` | Generate ML recommendations |
 | GET | `/api/students/{id}/recommendations` | Get saved recommendations |
 

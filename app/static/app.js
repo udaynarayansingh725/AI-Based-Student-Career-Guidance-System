@@ -52,8 +52,43 @@ function buildNav(active) {
         ${pages.map(([href, label]) =>
           `<a href="${href}" class="${href === active ? "active" : ""}">${label}</a>`
         ).join("")}
+        <button id="themeBtn" title="Switch theme (Dark / Light / System)"></button>
       </div>
     </div>`;
+  initTheme();
+}
+
+const THEME_LABELS = { dark: "Dark", light: "Light", system: "System" };
+
+function effectiveTheme() {
+  const saved = localStorage.getItem("theme") || "system";
+  if (saved === "light") return "light";
+  if (saved === "dark") return "dark";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function attachThemeToggle(btn) {
+  if (!btn) return;
+  const saved = localStorage.getItem("theme") || "system";
+  btn.textContent = THEME_LABELS[saved];
+  btn.addEventListener("click", () => {
+    const order = ["dark", "light", "system"];
+    const current = localStorage.getItem("theme") || "system";
+    const next = order[(order.indexOf(current) + 1) % order.length];
+    localStorage.setItem("theme", next);
+    btn.textContent = THEME_LABELS[next];
+    document.documentElement.dataset.theme = effectiveTheme();
+  });
+}
+
+function initTheme() {
+  document.documentElement.dataset.theme = effectiveTheme();
+  attachThemeToggle(document.getElementById("themeBtn"));
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+    if ((localStorage.getItem("theme") || "system") === "system") {
+      document.documentElement.dataset.theme = effectiveTheme();
+    }
+  });
 }
 
 function buildChips(containerId, items) {

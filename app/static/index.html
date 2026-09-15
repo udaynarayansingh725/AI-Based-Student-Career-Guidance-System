@@ -5,11 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Home — AI Career Guidance</title>
 <link rel="stylesheet" href="/static/style.css">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme") || "system";
+    var d = (t === "light") ? "light" : (t === "dark") ? "dark" : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = d;
+  })();
+</script>
 </head>
 <body>
 <nav id="nav"></nav>
 
 <section class="hero">
+  <button class="theme-fab" id="heroThemeBtn" title="Switch theme (Dark / Light / System)"></button>
   <div class="team">Hunters Algorithm</div>
   <h1>AI-Based Student Career Guidance System</h1>
   <p>Personalized, data-driven career guidance powered by Machine Learning. We analyze academic records, skills &amp; aptitudes, and personality profiles to recommend the best career path for every student.</p>
@@ -43,6 +51,6 @@
 
 <div class="toast" id="toast"></div>
 <script src="/static/app.js"></script>
-<script>buildNav("/");</script>
+<script>buildNav("/"); attachThemeToggle(document.getElementById("heroThemeBtn"));</script>
 </body>
 </html>

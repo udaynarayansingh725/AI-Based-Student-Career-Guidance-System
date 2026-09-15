@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registered Students — AI Career Guidance</title>
 <link rel="stylesheet" href="/static/style.css">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme") || "system";
+    var d = (t === "light") ? "light" : (t === "dark") ? "dark" : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = d;
+  })();
+</script>
 </head>
 <body>
 <nav id="nav"></nav>
@@ -49,7 +56,10 @@
             <span class="pill">💻 ${st.programming}</span>
             <span class="pill">🧠 ${st.analytical}</span>
           </div>
-          <a class="btn" href="/recommendations?id=${st.id}">View Recommendations →</a>
+          <div style="display:flex;gap:8px">
+            <a class="btn" href="/recommendations?id=${st.id}">View →</a>
+            <a class="btn" href="/edit?id=${st.id}">✏️ Edit</a>
+          </div>
         </div>`).join("");
     } catch (e) {
       box.innerHTML = '<div class="empty">Could not load students.</div>';

@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Recommended Careers — AI Career Guidance</title>
 <link rel="stylesheet" href="/static/style.css">
+<script>
+  (function () {
+    var t = localStorage.getItem("theme") || "system";
+    var d = (t === "light") ? "light" : (t === "dark") ? "dark" : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = d;
+  })();
+</script>
 </head>
 <body>
 <nav id="nav"></nav>
@@ -68,7 +75,7 @@
       ["Creativity", st.creativity], ["Teamwork", st.teamwork], ["Analytical", st.analytical],
     ];
     box.innerHTML = `
-      <h2>👤 ${st.name}</h2>
+      <h2>👤 ${st.name} <a class="btn" style="margin-left:10px;font-size:12px" href="/edit?id=${st.id}">✏️ Edit</a></h2>
       <div style="color:var(--muted);font-size:13px;margin-bottom:12px">${st.email}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
         ${(st.interests || []).map((i) => `<span class="skill">${i}</span>`).join("")}
